@@ -1,0 +1,41 @@
+# Python 缓存文件
+__pycache__/                 # 忽略 Python 缓存目录
+*.pyc                        # 忽略 Python 编译文件
+*.pyo                        # 忽略优化后的编译文件
+*.pyd                        # 忽略动态库文件（Windows）
+
+# 环境配置文件
+*.env                        # 忽略环境变量文件（如果以后需要）
+
+# 日志文件
+*.log                        # 忽略日志文件
+logs/                        # 忽略 logs 目录（如果你将日志存放在一个目录中）
+
+# 操作系统相关文件
+.DS_Store                    # 忽略 macOS 系统生成的文件
+Thumbs.db                    # 忽略 Windows 系统生成的文件
+desktop.ini                  # 忽略 Windows 系统配置文件
+
+# IDE 和编辑器配置文件
+.vscode/                     # 忽略 VSCode 的工作区设置
+.idea/                       # 忽略 JetBrains IDE（如 PyCharm）的项目文件
+*.sublime-workspace          # 忽略 Sublime Text 工作区配置
+*.sublime-project            # 忽略 Sublime Text 项目文件
+
+# 临时文件
+*.tmp                        # 忽略临时文件
+*.swp                        # 忽略 Vim 编辑器的临时文件
+*.bak                        # 忽略备份文件
+*.orig                       # 忽略合并冲突生成的临时文件
+
+# 本地 GUI 应用可能的输出文件
+*.db                         # 忽略 SQLite 数据库文件（如果你的 GUI 项目可能使用）
+*.sqlite3                    # 忽略 SQLite 数据库文件
+*.exe                        # 忽略可执行文件（如果有打包）
+*.app                        # 忽略 macOS 应用程序文件
+*.dll                        # 忽略动态链接库文件（Windows）
+*.so                         # 忽略动态库文件（Linux）
+
+# 如果以后使用虚拟环境，可以添加以下内容：
+# venv/                      # 忽略虚拟环境目录（如果命名为 venv 或其他名称）
+
