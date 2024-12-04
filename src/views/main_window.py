@@ -31,7 +31,7 @@ class main_frame(wx.Frame):
             self,
             parent,
             id=wx.ID_ANY,
-            title=wx.EmptyString,
+            title="微信聊天助手",
             pos=wx.DefaultPosition,
             size=wx.Size(500, 550),
             style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL,
@@ -40,6 +40,29 @@ class main_frame(wx.Frame):
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
 
         content_sizer = wx.BoxSizer(wx.VERTICAL)
+
+        self.assistant_label = wx.StaticText(
+            self,
+            wx.ID_ANY,
+            _("选择聊天助手"),
+            wx.DefaultPosition,
+            wx.Size(500, -1),
+            0,
+        )
+        self.assistant_label.Wrap(-1)
+        content_sizer.Add(self.assistant_label, 0, wx.ALL, 5)
+
+        assistant_choices = ["通用", "非暴力沟通"]
+        self.assistant_combo = wx.ComboBox(
+            self,
+            wx.ID_ANY,
+            "通用",
+            wx.DefaultPosition,
+            wx.Size(500, -1),
+            assistant_choices,
+            0,
+        )
+        content_sizer.Add(self.assistant_combo, 0, wx.ALL, 5)
 
         self.user_intent_label = wx.StaticText(
             self,
@@ -128,6 +151,13 @@ class main_frame(wx.Frame):
         self.copy_btn.Bind(wx.EVT_BUTTON, self.on_copy_btn_click)
         self.send_directly_btn.Bind(wx.EVT_BUTTON, self.on_send_directly_btn_click)
         self.clear_btn.Bind(wx.EVT_BUTTON, self.on_clear_btn_click)
+        self.assistant_combo.Bind(wx.EVT_COMBOBOX, self.on_assistant_select)
+
+        self.llm_utils = LLMUtils()
+        self.weixin_utils = WeixinUtils()
+        self.is_generating = False
+        self.current_thread = None
+        self.selected_assistant = "通用"  # 默认使用通用助手
 
     def __del__(self):
         pass
@@ -228,11 +258,11 @@ class main_frame(wx.Frame):
             pythoncom.CoInitialize()
 
             # Get chat history
-            chat_history = WeixinUtils.get_chat_history()
+            chat_history = WeixinUtils.get_chat_history(40)
 
             # Get LLM response
             response = LLMUtils.get_llm_response(
-                prompt_type="通用",
+                prompt_type=self.selected_assistant,
                 user_intent=user_intent,
                 chat_history=chat_history,
                 relationship=relationship,
@@ -284,3 +314,7 @@ class main_frame(wx.Frame):
         """Handle clear button click event"""
         self.hide_operation_controls()
         self.user_intent_input.SetValue("")
+
+    def on_assistant_select(self, event):
+        """当选择不同的助手时触发"""
+        self.selected_assistant = self.assistant_combo.GetValue()

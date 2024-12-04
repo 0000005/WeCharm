@@ -27,15 +27,16 @@ class LLMUtils:
         prompt = prompt.replace("{USER_INTENT}", user_intent)
         # 使用 chat_history 替换 {CHAT_HISTORY}
         prompt = prompt.replace("{CHAT_HISTORY}", chat_history)
-        # 使用 relationship 替换 {RELATIONSHIP}
-        prompt = prompt.replace("{RELATIONSHIP}", relationship)
+        # 根据relationship是否为空来决定是否添加关系信息
+        relationship_text = f"对方的是我的{relationship}。" if relationship else ""
+        prompt = prompt.replace("{RELATIONSHIP_TEXT}", relationship_text)
 
         llm = ChatOpenAI(
             model=DEEPSEEK_MODEL,
             openai_api_key=DEEPSEEK_API_KEY,
             openai_api_base=DEEPSEEK_BASE_URL,
             max_tokens=4024,
-            temperature=1.1,
+            temperature=1.5,
             response_format={"type": "json_object"},
         )
         print(f"prompt: {prompt}")
