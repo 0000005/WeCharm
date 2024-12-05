@@ -22,14 +22,16 @@ class LLMUtils:
         Returns:
             LLMResponse: Model containing different response styles
         """
-        prompt = get_prompt(prompt_type)
-        # 使用 user_input 替换 {USER_INTENT}
-        prompt = prompt.replace("{USER_INTENT}", user_intent)
+        sys_prompt = get_prompt(prompt_type)
         # 使用 chat_history 替换 {CHAT_HISTORY}
-        prompt = prompt.replace("{CHAT_HISTORY}", chat_history)
+        sys_prompt = sys_prompt.replace("{CHAT_HISTORY}", chat_history)
         # 根据relationship是否为空来决定是否添加关系信息
         relationship_text = f"对方的是我的{relationship}。" if relationship else ""
-        prompt = prompt.replace("{RELATIONSHIP_TEXT}", relationship_text)
+        sys_prompt = sys_prompt.replace("{RELATIONSHIP_TEXT}", relationship_text)
+
+        user_intent_prompt = get_prompt("用户意图")
+        # 使用 user_input 替换 {USER_INTENT}
+        user_intent_prompt = user_intent_prompt.replace("{USER_INTENT}", user_intent)
 
         llm = ChatOpenAI(
             model=DEEPSEEK_MODEL,
@@ -39,8 +41,17 @@ class LLMUtils:
             temperature=1.5,
             response_format={"type": "json_object"},
         )
-        print(f"prompt: {prompt}")
-        response = llm.invoke(prompt)
+        messages = [
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_intent_prompt},
+        ]
+
+        # 打印日志
+        print("LLM请求内容：")
+        for msg in messages:
+            print(f"{msg['role']}：{msg['content']}")
+
+        response = llm.invoke(messages)
         # Parse the JSON string into a dictionary
         content_dict = json.loads(response.content)
         return LLMResponse.from_dict(content_dict)

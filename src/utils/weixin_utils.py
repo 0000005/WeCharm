@@ -27,10 +27,10 @@ class WeixinUtils:
                 result.append(f"【sys】{msg.content}")
 
             elif msg.type == "friend":
-                result.append(f"【{msg.sender.ljust(20)}】：{msg.content}")
+                result.append(f"【{msg.sender}】：{msg.content}")
 
             elif msg.type == "self":
-                result.append(f"【self】：{msg.content}")
+                result.append(f"【我】：{msg.content}")
 
             elif msg.type == "time":
                 result.append(f"【time】{msg.time}")

@@ -67,7 +67,7 @@ class main_frame(wx.Frame):
         self.user_intent_label = wx.StaticText(
             self,
             wx.ID_ANY,
-            _("请输入你表达的意思"),
+            _("请输入你的意图"),
             wx.DefaultPosition,
             wx.Size(500, -1),
             0,
@@ -238,7 +238,7 @@ class main_frame(wx.Frame):
 
         # Validate inputs
         if not user_intent:
-            wx.MessageBox("请输入你表达的意思", "错误", wx.OK | wx.ICON_ERROR)
+            wx.MessageBox("请输入你的意图", "错误", wx.OK | wx.ICON_ERROR)
             self.restore_generate_button()
             return
 
