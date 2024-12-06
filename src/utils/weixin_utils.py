@@ -1,4 +1,5 @@
 from wxauto import WeChat
+from .time_utils import get_current_time
 
 
 class WeixinUtils:

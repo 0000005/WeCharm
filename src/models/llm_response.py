@@ -9,7 +9,7 @@ class SuggestedResponse:
 
 
 @dataclass
-class LLMResponse:
+class ReplyResponse:
     suggested_response: List[SuggestedResponse]
 
     @classmethod
@@ -34,3 +34,27 @@ class LLMResponse:
         """
         responses = [SuggestedResponse(**resp) for resp in data["suggested_response"]]
         return cls(suggested_response=responses)
+
+
+@dataclass
+class IntentItem:
+    text: str
+
+
+@dataclass
+class IntentResponse:
+    intent_list: List[IntentItem]
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "IntentResponse":
+        """
+        Create an IntentResponse instance from a dictionary.
+
+        Args:
+            data: Dictionary containing intent list data
+
+        Returns:
+            IntentResponse: Instance created from the dictionary
+        """
+        intents = [IntentItem(**intent) for intent in data["intent_list"]]
+        return cls(intent_list=intents)
