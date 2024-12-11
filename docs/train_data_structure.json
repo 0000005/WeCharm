@@ -1,0 +1,25 @@
+{
+    "meta":{
+        "scene":"",
+        "containNoise":false,
+        "multipleSenderMsg":false,
+        "multipleReceiveMsg":false,
+        "mode":"free/intent"
+    },
+    "content":{
+        "background":{
+            "currentTime":"",
+            "myName":"",
+            "myCareer":"",
+            "friendName":"",
+            "friendCareer":"",
+            "relatioship":""
+        },
+        "conversation":[
+            {
+                "who":"",
+                "msg":""
+            }
+        ]
+    }
+}
