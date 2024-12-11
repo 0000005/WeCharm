@@ -36,6 +36,31 @@ desktop.ini                  # 忽略 Windows 系统配置文件
 *.dll                        # 忽略动态链接库文件（Windows）
 *.so                         # 忽略动态库文件（Linux）
 
+# 前端相关文件
+node_modules/                # Node.js 依赖目录
+dist/                       # 构建输出目录
+build/                      # 构建输出目录
+.cache/                     # 缓存目录
+coverage/                   # 测试覆盖率报告目录
+
+# 包管理器文件
+yarn-debug.log*            # Yarn 调试日志
+yarn-error.log*            # Yarn 错误日志
+npm-debug.log*             # npm 调试日志
+.pnpm-debug.log*          # pnpm 调试日志
+.yarn-integrity           # Yarn 完整性文件
+
+# 环境变量和本地配置
+.env.local                 # 本地环境变量
+.env.development.local     # 开发环境本地变量
+.env.test.local           # 测试环境本地变量
+.env.production.local     # 生产环境本地变量
+
+# 前端工具配置文件
+.eslintcache              # ESLint 缓存
+.stylelintcache          # StyleLint 缓存
+.browserslistrc          # Browserslist 配置
+
 # 如果以后使用虚拟环境，可以添加以下内容：
 # venv/                      # 忽略虚拟环境目录（如果命名为 venv 或其他名称）
 
