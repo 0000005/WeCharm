@@ -28,6 +28,7 @@ const relationshipOptions = [
       ref="formRef"
       :model="form"
       label-position="right"
+      label-width="90px"
     >
       <!-- 基本信息卡片 -->
       <el-card class="info-card">
