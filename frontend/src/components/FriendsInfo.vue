@@ -1,9 +1,12 @@
 <script setup lang="ts">
 // FriendsInfo component
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch, onMounted, nextTick } from 'vue'
 import type { FormInstance } from 'element-plus'
+import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
 const formRef = ref<FormInstance>()
+const isLoading = ref(false)
 const form = reactive({
   name: '',
   age: '',
@@ -11,7 +14,8 @@ const form = reactive({
   gender: '',
   occupation: '',
   additionalInfo: '',
-  contextSize: 5
+  contextSize: 5,
+  wechatNickname: '微信昵称'
 })
 
 const relationshipOptions = [
@@ -20,6 +24,56 @@ const relationshipOptions = [
   { label: '同事', value: 'colleague' },
   { label: '其他', value: 'other' }
 ]
+
+// 加载好友信息
+const loadFriendInfo = async () => {
+  console.log('Loading friend info...')
+  isLoading.value = true
+  try {
+    const response = await axios.get(`/api/friend/load/${form.wechatNickname}`)
+    console.log('Friend info loaded:', response.data)
+    await nextTick()  // 等待 DOM 更新
+    Object.assign(form, response.data)
+  } catch (error: any) {
+    if (error.response?.status !== 404) {  // 忽略404错误，因为新用户没有保存过数据是正常的
+      console.error('Failed to load friend info:', error)
+      ElMessage.error('加载好友信息失败')
+    }
+  } finally {
+    await nextTick()  // 等待 DOM 更新
+    console.log('Loading complete, isLoading set to false')
+    isLoading.value = false
+  }
+}
+
+// 保存好友信息
+const saveFriendInfo = async () => {
+  if (!form.wechatNickname) return
+  console.log('Saving friend info, isLoading:', isLoading.value)
+  try {
+    await axios.post('/api/friend/save', form)
+  } catch (error: any) {
+    console.error('Failed to save friend info:', error)
+    ElMessage.error('保存好友信息失败')
+  }
+}
+
+// 监听表单数据变化自动保存
+watch(form, (newVal, oldVal) => {
+  console.log('Watch triggered, isLoading:', isLoading.value)
+  console.log('New value:', newVal)
+  console.log('Old value:', oldVal)
+  if (!isLoading.value) {
+    saveFriendInfo()
+  } else {
+    console.log('Save skipped due to loading state')
+  }
+}, { deep: true })
+
+// 组件挂载时自动加载数据
+onMounted(() => {
+  loadFriendInfo()
+})
 </script>
 
 <template>
@@ -40,8 +94,8 @@ const relationshipOptions = [
         
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="姓名">
-              <el-input v-model="form.name" placeholder="请输入姓名" />
+            <el-form-item label="微信昵称">
+              <el-input v-model="form.wechatNickname" readonly placeholder="微信昵称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -50,8 +104,13 @@ const relationshipOptions = [
             </el-form-item>
           </el-col>
         </el-row>
-
+        
         <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="姓名">
+              <el-input v-model="form.name" placeholder="请输入姓名" />
+            </el-form-item>
+          </el-col>
           <el-col :span="12">
             <el-form-item label="关系">
               <el-select v-model="form.relationship" placeholder="请选择关系" style="width: 100%">
@@ -64,6 +123,9 @@ const relationshipOptions = [
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+
+        <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="性别">
               <el-radio-group v-model="form.gender">
@@ -72,11 +134,12 @@ const relationshipOptions = [
               </el-radio-group>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="职业">
+              <el-input v-model="form.occupation" placeholder="请输入职业" />
+            </el-form-item>
+          </el-col>
         </el-row>
-
-        <el-form-item label="职业">
-          <el-input v-model="form.occupation" placeholder="请输入职业" />
-        </el-form-item>
 
         <el-form-item label="其他信息">
           <el-input

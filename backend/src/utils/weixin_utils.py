@@ -2,6 +2,16 @@ from wxauto import WeChat
 from .time_utils import get_current_time
 
 
+class WeChatSingleton:
+    _instance = None
+
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            cls._instance = WeChat()
+        return cls._instance
+
+
 class WeixinUtils:
     @staticmethod
     def get_chat_history(max_messages: int = None) -> str:
@@ -14,7 +24,7 @@ class WeixinUtils:
         Returns:
             str: 格式化后的聊天记录
         """
-        wx = WeChat()
+        wx = WeChatSingleton.get_instance()
         # 获取当前窗口的聊天记录，返回值是一个数组
         msgs = wx.GetAllMessage()
 
@@ -43,3 +53,14 @@ class WeixinUtils:
         chat_history = "\n".join(result)
 
         return chat_history
+
+    @staticmethod
+    def get_current_chat_name():
+        """
+        从 wxauto 中获取当前聊天窗口的名称
+
+        Returns:
+            str: 当前聊天窗口的名称
+        """
+        wx = WeChatSingleton.get_instance()
+        return wx.CurrentChat()

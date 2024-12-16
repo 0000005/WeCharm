@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, watch, onMounted } from 'vue'
+import { ref, reactive, watch, onMounted, nextTick } from 'vue'
 import type { FormInstance } from 'element-plus'
 
 const formData = reactive({
@@ -25,21 +25,31 @@ const genderOptions = [
   { label: '其他', value: 'other' }
 ]
 
+const isLoading = ref(false)
+
 // 加载设置
 const loadSettings = async () => {
+  console.log('Loading settings...')
+  isLoading.value = true
   try {
     const response = await fetch('/api/setting/load')
     const data = await response.json()
-    
+    console.log('Settings loaded:', data)
     // 更新表单数据
+    await nextTick()  // 等待 DOM 更新
     Object.assign(formData, data)
   } catch (error) {
     console.error('Failed to load settings:', error)
+  } finally {
+    await nextTick()  // 等待 DOM 更新
+    console.log('Loading complete, isLoading set to false')
+    isLoading.value = false
   }
 }
 
 // 保存设置
 const saveSettings = async () => {
+  console.log('Saving settings, isLoading:', isLoading.value)
   try {
     const response = await fetch('/api/setting/save', {
       method: 'POST',
@@ -58,8 +68,15 @@ const saveSettings = async () => {
 }
 
 // 监听表单数据变化
-watch(formData, () => {
-  saveSettings()
+watch(formData, (newVal, oldVal) => {
+  console.log('Watch triggered, isLoading:', isLoading.value)
+  console.log('New value:', newVal)
+  console.log('Old value:', oldVal)
+  if (!isLoading.value) {
+    saveSettings()
+  } else {
+    console.log('Save skipped due to loading state')
+  }
 }, { deep: true })
 
 // 组件挂载时加载设置
@@ -67,10 +84,6 @@ onMounted(() => {
   loadSettings()
 })
 
-const handleSubmit = async () => {
-  // TODO: Implement save settings logic
-  console.log('Settings saved:', formData)
-}
 </script>
 
 <template>

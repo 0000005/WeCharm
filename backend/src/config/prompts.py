@@ -72,7 +72,7 @@ GENERATE_INTENT_LIST_PROMPT = """
 ```json
 {
   "intent_list": [{
-    "text": "描述方向的内容",
+    "text": "描述方向的内容"
   }]
 }
 """
