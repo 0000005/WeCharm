@@ -15,7 +15,7 @@ const form = reactive({
   occupation: '',
   additionalInfo: '',
   contextSize: 5,
-  wechatNickname: '微信昵称'
+  wechatNickname: ''
 })
 
 const relationshipOptions = [
@@ -30,7 +30,7 @@ const loadFriendInfo = async () => {
   console.log('Loading friend info...')
   isLoading.value = true
   try {
-    const response = await axios.get(`/api/friend/load/${form.wechatNickname}`)
+    const response = await axios.get(`/api/friend/load`)
     console.log('Friend info loaded:', response.data)
     await nextTick()  // 等待 DOM 更新
     Object.assign(form, response.data)

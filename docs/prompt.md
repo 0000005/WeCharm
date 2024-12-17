@@ -40,7 +40,7 @@
 输出格式：
 ```json
 {
-  "suggested_response": {
+  "reply_list": {
     "explanation": "回复背后的沟通逻辑",
     "text": "建议回复内容",
   },
@@ -104,7 +104,7 @@
 输出格式：
 ```json
 {
-  "suggested_response": {
+  "reply_list": {
     "background": "总结当前对话背景",
     "analysis": "分析如何回复",
     "text": "建议回复内容",
@@ -135,7 +135,7 @@
 输出格式：
 ```json
 {
-  "suggested_response": {
+  "reply_list": {
     "background": "总结当前对话背景",
     "analysis": "分析如何回复",
     "reply1": "建议回复内容1，不同角度",

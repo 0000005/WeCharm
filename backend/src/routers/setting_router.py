@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 import json
 from utils.file_helper import get_file_path
 import os
-from models.setting import Settings
+from models.setting_model import Settings
 
 bp = Blueprint("setting", __name__)
 

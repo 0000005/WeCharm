@@ -1,9 +1,10 @@
 {
-  "model": "gpt-4",
-  "apiKey": "123456",
-  "name": "jerryyin",
-  "age": 33,
-  "gender": "other",
-  "occupation": "222",
-  "otherInfo": "3333"
+  "baseUrl": "https://api.deepseek.com/v1",
+  "model": "deepseek-chat",
+  "apiKey": "sk-7b9e81a039f44a329c17841d7dc1791f",
+  "name": "尹文俊",
+  "age": 31,
+  "gender": "male",
+  "occupation": "程序员",
+  "otherInfo": ""
 }

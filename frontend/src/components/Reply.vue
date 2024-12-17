@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { ElMessage } from 'element-plus'
+
+interface Intent {
+  text: string;
+}
+
+interface Reply {
+  style: string;
+  text: string;
+}
 
 const inputText = ref('')
 const intents = ref<string[]>([])
@@ -8,6 +18,10 @@ const showIntentList = ref(false)
 const replies = ref(['这是回复1这是回复1这是回复1这是回复1这是回复1这是回复1这是回复1这是回复1这是回复1这是回复1这是回复1这是回复1这是回复1这是回复1', '这是回复2', '这是回复3']) // 模拟回复列表
 const selectedReply = ref('') // 选中的回复
 const showReplyContainer = ref(false)
+// 是否正在探索
+const isExploring = ref(false)
+// 是否正在生成回复
+const isGenReplying = ref(false)
 
 // 监听用户选择的意图
 watch(selectedIntent, (newValue) => {
@@ -16,35 +30,71 @@ watch(selectedIntent, (newValue) => {
   }
 })
 
-const generateResponse = () => {
+const generateResponse = async () => {
   console.log('Generating response for:', inputText.value)
-  // 模拟生成意图列表
-  intents.value = [
-    '表示感谢表示感谢表示感谢表示感谢表示感谢表示感谢表示感谢表示感谢表示感谢表示感谢表示感谢表示感谢表示感谢表示感谢表示感谢表示感谢',
-    '礼貌回应',
-    '友好交流',
-    '专业建议'
-  ]
-  showIntentList.value = true
+  try {
+    if(isExploring.value) return
+    isExploring.value = true
+    const response = await fetch('/api/llm/intent')
+    const data = await response.json()
+    if (data.intent_list && Array.isArray(data.intent_list)) {
+      intents.value = data.intent_list.map((intent: Intent) => intent.text)
+      showIntentList.value = true
+    } else {
+      console.error('Invalid response format:', data)
+      ElMessage.error("生成失败，格式错误！")
+    }
+  } catch (error) {
+    ElMessage.error("生成失败，"+error)
+    console.error('Error fetching intents:', error)
+  } finally {
+    isExploring.value = false
+  }
 }
 
 // 复制回复内容
-const copyReply = () => {
+const copyReply = async () => {
   if (selectedReply.value) {
-    navigator.clipboard.writeText(selectedReply.value)
+    try {
+      await navigator.clipboard.writeText(selectedReply.value)
+      ElMessage.success('已复制到剪贴板')
+    } catch (error) {
+      console.error('复制失败:', error)
+      ElMessage.error('复制失败')
+    }
   }
 }
 
 // 重新生成回复
 const regenerateReplies = () => {
-  // TODO: 实现重新生成回复的逻辑
-  console.log('重新生成回复')
+  console.log('重新生成回复');
+  handleSmartReply();
 }
 
 // 直接回复
-const sendReply = () => {
-  // TODO: 实现直接回复的逻辑
-  console.log('发送回复:', selectedReply.value)
+const sendReply = async () => {
+  try {
+    const response = await fetch('/api/weixin/send_msg', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ msg: selectedReply.value }),
+    })
+    
+    if (response.ok) {
+      ElMessage.success('发送成功')
+      showReplyContainer.value = false
+      showIntentList.value = false
+      inputText.value = ''
+    } else {
+      const data = await response.json()
+      ElMessage.error(data.error || '发送失败')
+    }
+  } catch (error) {
+    console.error('Error sending message:', error)
+    ElMessage.error('发送失败，请稍后重试')
+  }
 }
 
 // 返回上一步
@@ -53,8 +103,35 @@ const goBack = () => {
 }
 
 // 处理智能回复按钮点击
-const handleSmartReply = () => {
-  showReplyContainer.value = true
+const handleSmartReply = async () => {
+  try {
+    if(isGenReplying.value) return
+
+    isGenReplying.value = true
+    const response = await fetch('/api/llm/gen_reply', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_intent: inputText.value
+      })
+    })
+
+    const data = await response.json()
+    if (data.reply_list && Array.isArray(data.reply_list)) {
+      replies.value = data.reply_list.map((reply: Reply) => reply.text)
+      showReplyContainer.value = true
+    } else {
+      ElMessage.error("生成失败，格式错误")
+      console.error('Invalid response format:', data)
+    }
+  } catch (error) {
+    ElMessage.error("生成失败，"+error)
+    console.error('Error generating replies:', error)
+  } finally {
+    isGenReplying.value = false
+  }
 }
 </script>
 
@@ -75,9 +152,9 @@ const handleSmartReply = () => {
         </div>
         <!-- 意图输入框 -->
         <div class="intent-controler">
-          <el-input v-model="inputText" type="textarea" :rows="1" placeholder="请输入你的回复内容（非必填），如：谢谢鉴赏" resize="none" clearable
+          <el-input v-model="inputText" placeholder="请输入你的回复内容（非必填），如：谢谢鉴赏" resize="none" clearable
             class="intent-input" />
-          <el-button @click="generateResponse" class="generate-btn">
+          <el-button @click="generateResponse" class="generate-btn" :loading="isExploring" :disabled="isGenReplying">
             <el-icon>
               <Promotion />
             </el-icon>
@@ -87,7 +164,7 @@ const handleSmartReply = () => {
 
       </div>
 
-      <div class="controls-container">
+      <!-- <div class="controls-container">
         <div class="selectors">
           <el-select placeholder="请选择助手" class="selector">
             <el-option label="助手 1" value="1" />
@@ -99,10 +176,11 @@ const handleSmartReply = () => {
             <el-option label="幽默" value="humorous" />
           </el-select>
         </div>
-      </div>
+      </div> -->
+
       <div class="smart-reply">
         <el-button type="primary" size="large" class="smart-reply-btn"
-          :style="{ backgroundColor: '#2563eb', borderColor: '#2563eb' }" @click="handleSmartReply">
+          :style="{ backgroundColor: '#2563eb', borderColor: '#2563eb' }" @click="handleSmartReply" :loading="isGenReplying" :disabled="isExploring">
           <el-icon>
             <Magic />
           </el-icon>
@@ -112,6 +190,7 @@ const handleSmartReply = () => {
     </div>
     <!--回复选择容器-->
     <div class="reply-container" v-show="showReplyContainer">
+      <!--回复列表-->
       <div class="reply-list">
         <el-radio-group v-model="selectedReply" class="reply-radio-group">
           <el-radio v-for="reply in replies" :key="reply" :label="reply" class="reply-radio-item">
@@ -132,7 +211,7 @@ const handleSmartReply = () => {
           </el-icon>
           复制
         </el-button>
-        <el-button @click="regenerateReplies">
+        <el-button @click="regenerateReplies" :loading="isGenReplying" :disabled="isExploring">
           <el-icon>
             <RefreshRight />
           </el-icon>

@@ -4,6 +4,7 @@ import type { FormInstance } from 'element-plus'
 
 const formData = reactive({
   // AI Settings
+  baseUrl: '',
   model: '',
   apiKey: '',
   // Personal Information
@@ -15,8 +16,7 @@ const formData = reactive({
 })
 
 const modelOptions = [
-  { label: 'GPT-3.5', value: 'gpt-3.5-turbo' },
-  { label: 'GPT-4', value: 'gpt-4' }
+  { label: 'deepseek', value: 'deepseek-chat' }
 ]
 
 const genderOptions = [
@@ -97,6 +97,10 @@ onMounted(() => {
           </div>
         </template>
         
+        <el-form-item label="baseUrl">
+          <el-input v-model="formData.baseUrl" placeholder="请输入baseUrl" />
+        </el-form-item>
+
         <el-form-item label="模型选择">
           <el-select v-model="formData.model" placeholder="请选择AI模型">
             <el-option

@@ -13,7 +13,9 @@ BASE_PROMPT = """
 - [recall] 代表消息被撤回
 - [nickname] 其他括号中的值，代表对方昵称
 
-{RELATIONSHIP_TEXT}
+{MINE_INFO}
+{FRIEND_INFO}
+
 
 # 聊天记录
 上下文开始
@@ -34,7 +36,7 @@ BASE_PROMPT = """
 输出格式：
 ```json
 {
-  "suggested_response": [{
+  "reply_list": [{
     "style":"风格",
     "text": "建议回复内容",
   }]
@@ -63,6 +65,8 @@ GENERATE_INTENT_LIST_PROMPT = """
 - [nickname] 其他括号中的值，代表对方昵称
 
 {ADDITIONAL_INFO}
+{MINE_INFO}
+{FRIEND_INFO}
 
 # 回复规则
 请根据微信对话记录，生成用户可能的“回复意图”或“回复方向”。“回复方向”指的是用户可能想表达的总体意图，而不是具体的回复内容。它可以是情感反应、行动计划或话题延续的方向。请回复4种可能的意图。

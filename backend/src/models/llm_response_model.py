@@ -10,14 +10,14 @@ class SuggestedResponse:
 
 @dataclass
 class ReplyResponse:
-    suggested_response: List[SuggestedResponse]
+    reply_list: List[SuggestedResponse]
 
     @classmethod
     def from_dict(cls, data: dict) -> "LLMResponse":
         """Convert dictionary to LLMResponse object
 
         Args:
-            data (dict): A dictionary containing 'suggested_response' key with a list of
+            data (dict): A dictionary containing 'reply_list' key with a list of
                         response dictionaries, where each dictionary has a 'text' field
 
         Returns:
@@ -25,15 +25,15 @@ class ReplyResponse:
 
         Example:
             data = {
-                'suggested_response': [
+                'reply_list': [
                     {'style': '正式','text': 'response1'},
                     {'style': '理性','text': 'response2'}
                 ]
             }
             response = LLMResponse.from_dict(data)
         """
-        responses = [SuggestedResponse(**resp) for resp in data["suggested_response"]]
-        return cls(suggested_response=responses)
+        responses = [SuggestedResponse(**resp) for resp in data["reply_list"]]
+        return cls(reply_list=responses)
 
 
 @dataclass
