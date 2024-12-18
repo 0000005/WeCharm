@@ -1,6 +1,9 @@
 import win32gui
 import win32con
 import time
+import logging
+
+logger = logging.getLogger("weixin_copilot")
 
 
 def get_wechat_window_rect():
@@ -33,14 +36,14 @@ def get_wechat_window_rect():
         rect = win32gui.GetWindowRect(wechat_handle)
         x, y, width, height = rect
 
-        print(
+        logger.debug(
             "微信窗口位置：({}, {})，尺寸：{} x {}".format(x, y, width - x, height - y)
         )
 
         # 在这里可以根据微信窗口的位置信息计算出侧边栏的位置信息
 
     else:
-        print("未找到微信窗口")
+        logger.debug("未找到微信窗口")
 
 
 # 定义一个函数来检测微信窗口是否处于激活状态，并接受一个回调函数作为参数

@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  base: '/chat-app/', 
   server: {
     proxy: {
       // 只转发 /api 开头的请求到后端服务器

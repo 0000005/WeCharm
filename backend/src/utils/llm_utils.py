@@ -5,6 +5,9 @@ from models.friend_model import Friend
 from models.setting_model import Settings
 from utils.time_utils import get_current_time
 import json
+import logging
+
+logger = logging.getLogger("weixin_copilot")
 
 
 class LLMUtils:
@@ -69,9 +72,9 @@ class LLMUtils:
     @staticmethod
     def _log_messages(messages: list):
         """Log the messages being sent to LLM."""
-        print("LLM请求内容：")
+        logger.debug("LLM请求内容：")
         for msg in messages:
-            print(f"{msg['role']}：{msg['content']}")
+            logger.debug(f"{msg['role']}：{msg['content']}")
 
     @staticmethod
     def get_llm_response(
