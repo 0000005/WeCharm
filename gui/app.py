@@ -161,7 +161,7 @@ def monitor_window(window):
     time.sleep(1)
 
     # 获取窗口句柄
-    window_handle = win32gui.FindWindow(None, "WeChatMainWndForPC")
+    window_handle = win32gui.FindWindow(None, "微言妙语")
 
     while True:
         sync_window_with_wechat(window_handle)
@@ -174,7 +174,7 @@ def main():
 
     # 创建窗口
     window = webview.create_window(
-        title="WeChat Copilot",
+        title="微言妙语",
         url="http://127.0.0.1:5000/chat-app/",
         width=550,
         height=768,

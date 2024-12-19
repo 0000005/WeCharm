@@ -9,7 +9,7 @@ class Settings(BaseModel):
     apiKey: str = ""
     # Personal Information
     name: str = ""
-    age: int = ""
+    age: Optional[int] = None
     gender: str = ""
     occupation: str = ""
     otherInfo: str = ""

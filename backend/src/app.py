@@ -20,10 +20,11 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 if getattr(sys, "frozen", False):
     # 如果是打包后的环境
     base_dir = os.path.dirname(os.path.dirname(sys.executable))
+    logs_dir = os.path.join(base_dir, "wecharm", "logs")
 else:
     base_dir = os.path.dirname(os.path.dirname(__file__))
+    logs_dir = os.path.join(base_dir, "logs")
 
-logs_dir = os.path.join(base_dir, "WeChat Copilot", "logs")
 if not os.path.exists(logs_dir):
     os.makedirs(logs_dir)
 

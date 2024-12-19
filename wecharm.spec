@@ -75,6 +75,7 @@ a = Analysis(
         'pydantic.networks',
         'pydantic.paths',
         'pydantic.types',
+        'logging.config',
     ],
     hookspath=[],
     hooksconfig={},
@@ -116,5 +117,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='WeChat Copilot',
+    name='WeCharm',
 )
