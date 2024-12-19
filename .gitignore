@@ -60,3 +60,4 @@ npm-debug.log*
 .eslintcache
 .stylelintcache
 .browserslistrc
+/backend/src/data
