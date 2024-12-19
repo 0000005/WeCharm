@@ -42,7 +42,7 @@ else:
         os.path.join(os.path.dirname(__file__), "config", "logging.conf")
     )
 
-logger = logging.getLogger("weixin_copilot")
+logger = logging.getLogger("wecharm")
 
 app = Flask(__name__)
 CORS(app)  # 启用CORS支持，允许跨域请求

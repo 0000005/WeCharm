@@ -7,7 +7,7 @@ from utils.time_utils import get_current_time
 import json
 import logging
 
-logger = logging.getLogger("weixin_copilot")
+logger = logging.getLogger("wecharm")
 
 
 class LLMUtils:

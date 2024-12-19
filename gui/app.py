@@ -1,3 +1,4 @@
+from math import log
 import sys
 import os
 import webview
@@ -6,6 +7,7 @@ import time
 import threading
 import win32gui
 import win32con
+import win32process
 import logging
 
 # 配置日志
@@ -19,11 +21,11 @@ log_file = os.path.join(
 )
 logging.basicConfig(
     filename=log_file,
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
-logger = logging.getLogger("weixin_copilot")
+logger = logging.getLogger("wecharm")
 
 
 def get_wechat_window_rect():
@@ -64,6 +66,23 @@ def is_wechat_minimized():
     return win32gui.IsIconic(handle)
 
 
+def is_wechat_active():
+    """检查微信窗口是否处于激活状态"""
+    try:
+        wechat_handle = get_wechat_handle()
+        if not wechat_handle:
+            return False
+            
+        # 获取当前激活窗口
+        active_window = win32gui.GetForegroundWindow()
+        # 如果当前激活窗口是微信或者是我们的窗口，都认为是活跃状态
+        our_window = win32gui.FindWindow(None, "微言妙语")
+        return active_window in (wechat_handle, our_window)
+    except Exception as e:
+        logging.error(f"检查微信窗口状态时出错: {str(e)}")
+        return False
+
+
 def attach_window_to_wechat(window_handle):
     """将窗口吸附到微信窗口右侧"""
     if not window_handle:
@@ -80,11 +99,11 @@ def attach_window_to_wechat(window_handle):
     wx, wy, wr, wb = win32gui.GetWindowRect(wechat_handle)
     wechat_height = wb - wy
 
-    # 固定窗口宽度为 550
-    window_width = 550
+    # 固定窗口宽度为 650
+    window_width = 650
 
     # 计算新位置（微信窗口右侧，完全贴合）
-    new_x = wr - 8  # 减去 Windows 窗口边框宽度，确保完全贴合
+    new_x = wr - 1  # 减去 Windows 窗口边框宽度，确保完全贴合
     new_y = wy
 
     # 设置窗口位置和大小
@@ -102,12 +121,16 @@ def attach_window_to_wechat(window_handle):
 
 def sync_window_with_wechat(window_handle):
     """同步窗口显示状态与微信窗口"""
-    is_minimized = is_wechat_minimized()
-    if is_minimized:
-        win32gui.ShowWindow(window_handle, win32con.SW_HIDE)
-    else:
+    # is_minimized = is_wechat_minimized()
+    is_active = is_wechat_active()
+    if is_active:
         win32gui.ShowWindow(window_handle, win32con.SW_SHOW)
+        # 只使用 SetWindowPos 来保持窗口在顶层，而不改变焦点
+        win32gui.SetWindowPos(window_handle, win32con.HWND_TOPMOST, 0, 0, 0, 0,
+                            win32con.SWP_NOMOVE | win32con.SWP_NOSIZE | win32con.SWP_SHOWWINDOW)
         attach_window_to_wechat(window_handle)
+    else:
+        win32gui.ShowWindow(window_handle, win32con.SW_HIDE)
 
 
 def start_backend():
@@ -165,7 +188,7 @@ def monitor_window(window):
 
     while True:
         sync_window_with_wechat(window_handle)
-        time.sleep(0.1)  # 每500ms检查一次
+        time.sleep(0.1)  # 每100ms检查一次
 
 
 def main():
@@ -176,10 +199,9 @@ def main():
     window = webview.create_window(
         title="微言妙语",
         url="http://127.0.0.1:5000/chat-app/",
-        width=550,
+        width=650,
         height=768,
-        resizable=True,
-        frameless=True,
+        resizable=False
     )
 
     # 启动监控线程

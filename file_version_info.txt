@@ -32,7 +32,7 @@ VSVersionInfo(
         [StringStruct(u'CompanyName', u''),
         StringStruct(u'FileDescription', u'微言妙语 - 微信聊天助手'),
         StringStruct(u'FileVersion', u'1.0.0.0'),
-        StringStruct(u'InternalName', u'weixin_copilot'),
+        StringStruct(u'InternalName', u'wecharm'),
         StringStruct(u'LegalCopyright', u'Copyright (C) 2024'),
         StringStruct(u'OriginalFilename', u'微言妙语.exe'),
         StringStruct(u'ProductName', u'微言妙语'),

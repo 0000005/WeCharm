@@ -11,7 +11,7 @@ from dataclasses import asdict
 import logging
 import traceback
 
-logger = logging.getLogger("weixin_copilot")
+logger = logging.getLogger("wecharm")
 
 bp = Blueprint("llm", __name__)
 

@@ -7,7 +7,7 @@ from utils.weixin_utils import WeixinUtils
 import logging
 import traceback
 
-logger = logging.getLogger("weixin_copilot")
+logger = logging.getLogger("wecharm")
 bp = Blueprint("friend", __name__)
 
 

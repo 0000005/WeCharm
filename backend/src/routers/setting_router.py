@@ -6,7 +6,7 @@ from models.setting_model import Settings
 import logging
 import traceback
 
-logger = logging.getLogger("weixin_copilot")
+logger = logging.getLogger("wecharm")
 bp = Blueprint("setting", __name__)
 
 # TODO 好友信息保存接口

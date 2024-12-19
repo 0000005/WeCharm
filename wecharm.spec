@@ -23,6 +23,7 @@ a = Analysis(
     datas=[
         (str(BACKEND_PATH), 'backend'),
         (str(LOGS_PATH), 'logs'),
+        (str(GUI_PATH / 'logo.png'), 'gui'),
     ],
     hiddenimports=[
         'win32gui', 
@@ -94,7 +95,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='微言妙语',
+    name='wecharm',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -105,8 +106,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=None,
-    version='file_version_info.txt'
+    icon=str(GUI_PATH / 'logo.png')
 )
 
 coll = COLLECT(
@@ -114,6 +114,7 @@ coll = COLLECT(
     a.binaries,
     a.zipfiles,
     a.datas,
+    a.scripts,
     strip=False,
     upx=True,
     upx_exclude=[],
