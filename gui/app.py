@@ -9,11 +9,18 @@ import win32con
 import logging
 
 # 配置日志
-log_file = os.path.join(os.path.dirname(sys.executable) if getattr(sys, "frozen", False) else os.path.dirname(__file__), "app.log")
+log_file = os.path.join(
+    (
+        os.path.dirname(sys.executable)
+        if getattr(sys, "frozen", False)
+        else os.path.dirname(__file__)
+    ),
+    "app.log",
+)
 logging.basicConfig(
     filename=log_file,
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
 logger = logging.getLogger("weixin_copilot")
@@ -59,10 +66,16 @@ def is_wechat_minimized():
 
 def attach_window_to_wechat(window_handle):
     """将窗口吸附到微信窗口右侧"""
-    wechat_handle = get_wechat_handle()
-    if wechat_handle == 0:
+    if not window_handle:
+        logging.error("无效的应用窗口句柄")
         return False
 
+    wechat_handle = get_wechat_handle()
+    if not wechat_handle:
+        logging.error("未找到微信窗口，请确保微信已经启动")
+        return False
+
+    logging.info(f"获取到微信窗口句柄: {wechat_handle}")
     # 获取微信窗口位置和大小
     wx, wy, wr, wb = win32gui.GetWindowRect(wechat_handle)
     wechat_height = wb - wy
@@ -102,21 +115,28 @@ def start_backend():
     try:
         if getattr(sys, "frozen", False):
             # 如果是打包后的环境
-            backend_dir = os.path.join(os.path.dirname(sys.executable), "_internal", "backend")
+            backend_dir = os.path.join(
+                os.path.dirname(sys.executable), "_internal", "backend"
+            )
             if not os.path.exists(backend_dir):
                 logging.error(f"后端目录不存在: {backend_dir}")
                 return
-            
+
             backend_src = os.path.join(backend_dir, "src")
             if not os.path.exists(backend_src):
                 logging.error(f"后端源码目录不存在: {backend_src}")
                 return
-                
+
             logging.info(f"启动后端服务，路径: {backend_src}")
             # 在打包环境中，直接导入后端模块
             sys.path.append(backend_src)
             import app
-            threading.Thread(target=app.app.run, kwargs={"host": "0.0.0.0", "port": 5000}, daemon=True).start()
+
+            threading.Thread(
+                target=app.app.run,
+                kwargs={"host": "0.0.0.0", "port": 5000},
+                daemon=True,
+            ).start()
         else:
             backend_path = os.path.join(
                 os.path.dirname(os.path.dirname(__file__)), "backend", "src", "app.py"
@@ -124,7 +144,7 @@ def start_backend():
             if not os.path.exists(backend_path):
                 logging.error(f"后端脚本不存在: {backend_path}")
                 return
-                
+
             logging.info(f"启动后端服务，路径: {backend_path}")
             # 开发环境下使用当前 python 解释器
             subprocess.Popen([sys.executable, backend_path])
@@ -141,7 +161,7 @@ def monitor_window(window):
     time.sleep(1)
 
     # 获取窗口句柄
-    window_handle = win32gui.FindWindow(None, "微言妙语")
+    window_handle = win32gui.FindWindow(None, "WeChatMainWndForPC")
 
     while True:
         sync_window_with_wechat(window_handle)

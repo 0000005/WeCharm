@@ -3,6 +3,7 @@ import sys
 from flask import Flask
 from flask_cors import CORS
 import logging
+import logging.config
 import os
 import sys
 from routers.llm_router import bp as llm_bp
