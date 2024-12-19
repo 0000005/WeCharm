@@ -201,7 +201,8 @@ def main():
         url="http://127.0.0.1:5000/chat-app/",
         width=650,
         height=768,
-        resizable=False
+        resizable=False,
+        frameless=True,
     )
 
     # 启动监控线程

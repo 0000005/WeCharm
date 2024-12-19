@@ -1,9 +1,17 @@
 <script setup lang="ts">
 import TabMenu from './components/TabMenu.vue'
+
+const closeWindow = () => {
+  window.pywebview.api.close_window()
+}
 </script>
 
 <template>
   <div class="app-container">
+    <div class="title-bar">
+      <div class="window-title">微言妙语</div>
+      <div class="close-button" @click="closeWindow">×</div>
+    </div>
     <div class="main-container">
       <TabMenu />
     </div>
@@ -62,5 +70,44 @@ import TabMenu from './components/TabMenu.vue'
 .copyright a:hover {
   color: #40a9ff;
   text-decoration: underline;
+}
+
+.title-bar {
+  width: 100%;
+  height: 40px;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  -webkit-app-region: drag;
+}
+
+.window-title {
+  margin-left: 20px;
+  font-size: 19px;
+  font-weight: 500;
+  color: #333;
+}
+
+.close-button {
+  margin-right: 20px;
+  width: 24px;
+  height: 24px;
+  background-color: #ff4757;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  transition: background-color 0.2s;
+  -webkit-app-region: no-drag;
+}
+
+.close-button:hover {
+  background-color: #ff6b81;
 }
 </style>

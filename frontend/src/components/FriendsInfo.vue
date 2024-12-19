@@ -93,7 +93,7 @@ defineExpose({
       ref="formRef"
       :model="form"
       label-position="right"
-      label-width="90px"
+      label-width="80px"
     >
       <!-- 基本信息卡片 -->
       <el-card class="info-card">
@@ -189,7 +189,7 @@ defineExpose({
 
 <style scoped>
 .friends-info {
-  padding: 20px;
+  padding-top: 20px;
   max-width: 1000px;
   margin: 0 auto;
 }

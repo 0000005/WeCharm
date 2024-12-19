@@ -179,7 +179,7 @@ onMounted(() => {
 
 <style scoped>
 .settings {
-  padding: 20px;
+  padding-top: 20px;
 }
 
 .settings-card {
