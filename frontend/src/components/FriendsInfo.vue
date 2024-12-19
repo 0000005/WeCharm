@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // FriendsInfo component
-import { ref, reactive, watch, onMounted, nextTick } from 'vue'
+import { ref, reactive, watch, onMounted, nextTick, defineExpose } from 'vue'
 import type { FormInstance } from 'element-plus'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
@@ -19,10 +19,16 @@ const form = reactive({
 })
 
 const relationshipOptions = [
-  { label: '亲人', value: 'family' },
-  { label: '朋友', value: 'friend' },
-  { label: '同事', value: 'colleague' },
-  { label: '其他', value: 'other' }
+  { label: '上级', value: '上级' },
+  { label: '朋友', value: '朋友' },
+  { label: '同事', value: '同事' },
+  { label: '老公', value: '老公' },
+  { label: '老婆', value: '老婆' },
+  { label: '闺蜜', value: '闺蜜' },
+  { label: '爸爸', value: '爸爸' },
+  { label: '妈妈', value: '妈妈' },
+  { label: '亲人', value: '亲人' },
+  { label: '陌生人', value: '陌生人' },
 ]
 
 // 加载好友信息
@@ -74,6 +80,11 @@ watch(form, (newVal, oldVal) => {
 onMounted(() => {
   loadFriendInfo()
 })
+
+// 暴露方法给父组件
+defineExpose({
+  loadFriendInfo
+})
 </script>
 
 <template>
@@ -100,7 +111,7 @@ onMounted(() => {
           </el-col>
           <el-col :span="12">
             <el-form-item label="年龄">
-              <el-input-number v-model="form.age" :min="1" :max="150" placeholder="请输入年龄" style="width: 100%" />
+              <el-input-number v-model="form.age"  size="mini" :min="1" :max="150" placeholder="请输入年龄" style="width: 100%" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -113,7 +124,7 @@ onMounted(() => {
           </el-col>
           <el-col :span="12">
             <el-form-item label="关系">
-              <el-select v-model="form.relationship" placeholder="请选择关系" style="width: 100%">
+              <el-select v-model="form.relationship" allow-create filterable placeholder="请选择关系" style="width: 100%">
                 <el-option
                   v-for="item in relationshipOptions"
                   :key="item.value"

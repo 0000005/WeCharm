@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import Reply from './Reply.vue'
 import FriendsInfo from './FriendsInfo.vue'
 import Settings from './Settings.vue'
 
 const activeTab = ref('chat')
+
+// 获取子组件引用
+const friendsInfoRef = ref()
+
+// 监听标签页切换
+watch(activeTab, (newTab) => {
+  if (newTab === 'friends' && friendsInfoRef.value) {
+    friendsInfoRef.value.loadFriendInfo()
+  }
+})
 </script>
 
 <template>
@@ -28,7 +38,7 @@ const activeTab = ref('chat')
             <span>好友信息</span>
           </div>
         </template>
-        <FriendsInfo />
+        <FriendsInfo ref="friendsInfoRef" />
       </el-tab-pane>
       <el-tab-pane label="设置" name="settings">
         <template #label>

@@ -3,7 +3,10 @@ import json
 from utils.file_helper import get_file_path
 import os
 from models.setting_model import Settings
+import logging
+import traceback
 
+logger = logging.getLogger("weixin_copilot")
 bp = Blueprint("setting", __name__)
 
 # TODO 好友信息保存接口
@@ -25,6 +28,8 @@ def save_settings():
         return jsonify({"message": "Settings saved successfully"}), 200
 
     except Exception as e:
+        # 打印异常堆栈
+        logger.error(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
 
 
@@ -47,4 +52,6 @@ def load_settings():
         return jsonify(settings.dict()), 200
 
     except Exception as e:
+        # 打印异常堆栈
+        logger.error(traceback.format_exc())
         return jsonify({"error": str(e)}), 500

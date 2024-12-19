@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
-import logging.config
+import logging
 import os
+import sys
 from routers.llm_router import bp as llm_bp
 from routers.setting_router import bp as setting_bp
 from routers.friend_router import bp as friend_bp
@@ -9,12 +10,28 @@ from routers.weixin_router import bp as weixin_bp
 from routers.static_router import bp as static_bp
 
 # 确保logs目录存在
-logs_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
+if getattr(sys, "frozen", False):
+    # 如果是打包后的环境
+    base_dir = os.path.dirname(os.path.dirname(sys.executable))
+else:
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+
+logs_dir = os.path.join(base_dir, 'logs')
 if not os.path.exists(logs_dir):
     os.makedirs(logs_dir)
 
 # 配置日志
-logging.config.fileConfig(os.path.join(os.path.dirname(__file__), 'config', 'logging.conf'))
+if getattr(sys, "frozen", False):
+    # 打包环境下，使用基本的日志配置
+    logging.basicConfig(
+        filename=os.path.join(logs_dir, 'weixin_copilot.log'),
+        level=logging.DEBUG,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+else:
+    # 开发环境下，使用配置文件
+    logging.config.fileConfig(os.path.join(os.path.dirname(__file__), 'config', 'logging.conf'))
+
 logger = logging.getLogger('weixin_copilot')
 
 app = Flask(__name__)

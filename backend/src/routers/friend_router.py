@@ -4,7 +4,10 @@ from utils.file_helper import get_file_path
 import os
 from models.friend_model import Friend
 from utils.weixin_utils import WeixinUtils
+import logging
+import traceback
 
+logger = logging.getLogger("weixin_copilot")
 bp = Blueprint("friend", __name__)
 
 
@@ -27,6 +30,8 @@ def save_friend():
         return jsonify({"message": "Friend information saved successfully"}), 200
 
     except Exception as e:
+        # 打印异常堆栈
+        logger.error(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
 
 
@@ -53,4 +58,6 @@ def load_friend():
         return jsonify(friend.dict()), 200
 
     except Exception as e:
+        # 打印异常堆栈
+        logger.error(traceback.format_exc())
         return jsonify({"error": str(e)}), 500

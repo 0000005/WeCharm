@@ -8,6 +8,10 @@ import json
 import os
 import traceback
 from dataclasses import asdict
+import logging
+import traceback
+
+logger = logging.getLogger("weixin_copilot")
 
 bp = Blueprint("llm", __name__)
 
@@ -58,7 +62,7 @@ def explore_intent():
 
     except Exception as e:
         # 打印错误堆栈
-        traceback.print_exc()
+        logger.error(traceback.format_exc())
         return jsonify({"error": str(e)}), 500
 
 
@@ -111,6 +115,6 @@ def gen_reply():
         return jsonify(asdict(response)), 200
 
     except Exception as e:
-        # Print error stack
-        traceback.print_exc()
+        # 打印错误堆栈
+        logger.error(traceback.format_exc())
         return jsonify({"error": str(e)}), 500

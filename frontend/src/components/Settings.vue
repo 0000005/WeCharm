@@ -16,13 +16,14 @@ const formData = reactive({
 })
 
 const modelOptions = [
-  { label: 'deepseek', value: 'deepseek-chat' }
+  { label: 'deepseek-chat', value: 'deepseek-chat' },
+  { label: 'gpt-4o', value: 'gpt-4o' }
 ]
 
 const genderOptions = [
-  { label: '男', value: 'male' },
-  { label: '女', value: 'female' },
-  { label: '其他', value: 'other' }
+  { label: '男', value: '男' },
+  { label: '女', value: '女' },
+  { label: '未知', value: '未知' }
 ]
 
 const isLoading = ref(false)
@@ -79,6 +80,16 @@ watch(formData, (newVal, oldVal) => {
   }
 }, { deep: true })
 
+// 监听模型变化，自动设置API地址
+watch(() => formData.model, (newModel) => {
+  if (newModel === 'deepseek-chat') {
+    formData.baseUrl = 'https://api.deepseek.com/v1'
+  }
+  else if (newModel === 'gpt-4o') {
+    formData.baseUrl = 'https://api.openai.com/v1'
+  }
+})
+
 // 组件挂载时加载设置
 onMounted(() => {
   loadSettings()
@@ -97,12 +108,12 @@ onMounted(() => {
           </div>
         </template>
         
-        <el-form-item label="baseUrl">
-          <el-input v-model="formData.baseUrl" placeholder="请输入baseUrl" />
+        <el-form-item label="API地址">
+          <el-input v-model="formData.baseUrl" placeholder="请输入API地址" />
         </el-form-item>
 
         <el-form-item label="模型选择">
-          <el-select v-model="formData.model" placeholder="请选择AI模型">
+          <el-select v-model="formData.model" allow-create filterable placeholder="请选择AI模型">
             <el-option
               v-for="option in modelOptions"
               :key="option.value"
@@ -135,7 +146,7 @@ onMounted(() => {
         </el-form-item>
 
         <el-form-item label="年龄">
-          <el-input-number v-model="formData.age" :min="0" :max="150" placeholder="请输入年龄" />
+          <el-input-number v-model="formData.age" size="mini" :min="0" :max="150" placeholder="请输入年龄" />
         </el-form-item>
 
         <el-form-item label="性别">

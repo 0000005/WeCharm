@@ -27,6 +27,7 @@ const isGenReplying = ref(false)
 watch(selectedIntent, (newValue) => {
   if (newValue) {
     inputText.value = newValue
+    handleSmartReply()
   }
 })
 
