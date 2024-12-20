@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class Friend(BaseModel):
     # Basic Information
     wechatNickname: str
@@ -10,4 +11,5 @@ class Friend(BaseModel):
     gender: str = ""
     occupation: str = ""
     additionalInfo: str = ""
-    contextSize: int = 5
+    contextSize: int = 15
+    autoGenerate: bool = False

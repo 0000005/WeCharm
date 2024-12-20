@@ -15,7 +15,8 @@ const form = reactive({
   occupation: '',
   additionalInfo: '',
   contextSize: 15,
-  wechatNickname: ''
+  wechatNickname: '',
+  autoGenerate: false
 })
 
 const relationshipOptions = [
@@ -170,7 +171,7 @@ defineExpose({
           </div>
         </template>
 
-        <el-form-item label="上下文数">
+        <el-form-item label="上下文数" style="width: 100%">
           <el-input-number
             v-model="form.contextSize"
             :min="1"
@@ -181,6 +182,14 @@ defineExpose({
               <span class="context-description">设置每次对话时参考的历史消息数量（1-20条）</span>
             </template>
           </el-input-number>
+        </el-form-item>
+
+        <el-form-item label="自动生成">
+          <el-switch
+            v-model="form.autoGenerate"
+            active-text="开启"
+            inactive-text="关闭"
+          />
         </el-form-item>
       </el-card>
     </el-form>
