@@ -1,0 +1,9 @@
+pywin32>=305
+pywebview>=4.3.1
+flask>=3.0.0
+flask-cors>=4.0.0
+werkzeug>=3.0.1
+wxauto>=0.1.7
+langchain-openai>=0.0.2
+pydantic>=2.5.2
+pythonnet>=3.0.3
