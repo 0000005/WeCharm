@@ -9,8 +9,12 @@ import threading
 import win32gui
 import win32con
 import win32process
+import win32event
+import winerror
 import logging
 import logging.config
+import ctypes
+import win32api
 
 # 配置日志
 # 确保logs目录存在
@@ -40,6 +44,13 @@ else:
     )
 
 logger = logging.getLogger("wecharm")
+
+# 创建互斥锁
+mutex_name = "Global\\WeixinCopilot_SingleInstance_Mutex"
+mutex = win32event.CreateMutex(None, False, mutex_name)
+if win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS:
+    ctypes.windll.user32.MessageBoxW(None, "程序已打开，请回到微信聊天窗口。", "提示", 0)
+    sys.exit(0)
 
 
 def get_wechat_window_rect():
