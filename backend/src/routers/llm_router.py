@@ -40,6 +40,12 @@ def explore_intent():
                 settings = Settings(**settings_data)
         else:
             settings = Settings()  # 使用默认配置
+        # 检查，如果setting中没有配置 model,baseUrl或apiKey就返回400错误
+        if not settings.model or not settings.baseUrl or not settings.apiKey:
+            return (
+                jsonify({"error": "请先到设置界面配置正确的API地址、模型、API Key。"}),
+                400,
+            )
 
         # 2. 获取好友配置信息
         friend_file = get_file_path(f"{nickname}.json")
@@ -92,6 +98,12 @@ def gen_reply():
                 settings = Settings(**settings_data)
         else:
             settings = Settings()  # 使用默认配置
+        # 检查，如果setting中没有配置 model,baseUrl或apiKey就返回400错误
+        if not settings.model or not settings.baseUrl or not settings.apiKey:
+            return (
+                jsonify({"error": "请先到设置界面配置正确的API地址、模型、API Key。"}),
+                400,
+            )
 
         # 2. 获取好友配置信息
         friend_file = get_file_path(f"{chat_name}.json")

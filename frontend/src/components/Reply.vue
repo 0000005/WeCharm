@@ -37,6 +37,11 @@ const generateResponse = async () => {
     if(isExploring.value) return
     isExploring.value = true
     const response = await fetch('/api/llm/intent')
+    if (!response.ok) {
+      const errorData = await response.json()
+      ElMessage.error(errorData.error)
+      return
+    }
     const data = await response.json()
     if (data.intent_list && Array.isArray(data.intent_list)) {
       intents.value = data.intent_list.map((intent: Intent) => intent.text)
@@ -118,6 +123,12 @@ const handleSmartReply = async () => {
         user_intent: inputText.value
       })
     })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      ElMessage.error(errorData.error)
+      return
+    }
 
     const data = await response.json()
     if (data.reply_list && Array.isArray(data.reply_list)) {

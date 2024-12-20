@@ -14,7 +14,7 @@ const form = reactive({
   gender: '',
   occupation: '',
   additionalInfo: '',
-  contextSize: 5,
+  contextSize: 15,
   wechatNickname: ''
 })
 
@@ -170,7 +170,7 @@ defineExpose({
           </div>
         </template>
 
-        <el-form-item label="上下文数量">
+        <el-form-item label="上下文数">
           <el-input-number
             v-model="form.contextSize"
             :min="1"

@@ -72,7 +72,7 @@ def is_wechat_active():
         wechat_handle = get_wechat_handle()
         if not wechat_handle:
             return False
-            
+
         # 获取当前激活窗口
         active_window = win32gui.GetForegroundWindow()
         # 如果当前激活窗口是微信或者是我们的窗口，都认为是活跃状态
@@ -126,8 +126,15 @@ def sync_window_with_wechat(window_handle):
     if is_active:
         win32gui.ShowWindow(window_handle, win32con.SW_SHOW)
         # 只使用 SetWindowPos 来保持窗口在顶层，而不改变焦点
-        win32gui.SetWindowPos(window_handle, win32con.HWND_TOPMOST, 0, 0, 0, 0,
-                            win32con.SWP_NOMOVE | win32con.SWP_NOSIZE | win32con.SWP_SHOWWINDOW)
+        win32gui.SetWindowPos(
+            window_handle,
+            win32con.HWND_TOPMOST,
+            0,
+            0,
+            0,
+            0,
+            win32con.SWP_NOMOVE | win32con.SWP_NOSIZE | win32con.SWP_SHOWWINDOW,
+        )
         attach_window_to_wechat(window_handle)
     else:
         win32gui.ShowWindow(window_handle, win32con.SW_HIDE)
@@ -191,28 +198,52 @@ def monitor_window(window):
         time.sleep(0.1)  # 每100ms检查一次
 
 
+class Api:
+    def close_window(self):
+        """关闭窗口并退出程序"""
+        logger.debug("关闭窗口并退出程序")
+        window.destroy()
+        sys.exit(0)
+
+
 def main():
-    # 启动后端服务
-    start_backend()
+    global window
+    try:
+        # 检查微信是否已启动
+        if get_wechat_handle() == 0:
+            win32gui.MessageBox(
+                None,
+                "请先启动微信，再打开此程序",
+                "提示",
+                win32con.MB_OK | win32con.MB_ICONINFORMATION,
+            )
+            sys.exit(1)
 
-    # 创建窗口
-    window = webview.create_window(
-        title="微言妙语",
-        url="http://127.0.0.1:5000/chat-app/",
-        width=650,
-        height=768,
-        resizable=False,
-        frameless=True,
-    )
+        # 启动后端服务
+        start_backend()
 
-    # 启动监控线程
-    monitor_thread = threading.Thread(
-        target=monitor_window, args=(window,), daemon=True
-    )
-    monitor_thread.start()
+        # 创建窗口
+        api = Api()
+        window = webview.create_window(
+            title="微言妙语",
+            url="http://127.0.0.1:5000/chat-app/",
+            width=650,
+            height=768,
+            resizable=False,
+            frameless=True,
+            js_api=api,  # 绑定 API
+        )
 
-    # 启动主窗口
-    webview.start()
+        # 启动监控线程
+        monitor_thread = threading.Thread(
+            target=monitor_window, args=(window,), daemon=True
+        )
+        monitor_thread.start()
+
+        # 启动主窗口
+        webview.start()
+    except Exception as e:
+        logging.error(f"启动应用时出错: {str(e)}")
 
 
 if __name__ == "__main__":

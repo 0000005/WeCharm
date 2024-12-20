@@ -75,7 +75,7 @@ const closeWindow = () => {
 .title-bar {
   width: 100%;
   height: 40px;
-  background-color: #f8f9fa;
+  background-color: #e7e7e7;
   display: flex;
   align-items: center;
   justify-content: space-between;
