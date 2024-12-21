@@ -47,6 +47,7 @@ class WeixinUtils:
 
         Returns:
             str: 格式化后的聊天记录
+            list:所有的聊天记录
         """
         with com_initializer():
             wx = WeChatSingleton.get_instance()
@@ -75,9 +76,9 @@ class WeixinUtils:
                     result.append(f"【recall】{msg.content}")
 
             # Join all messages with newlines
-            chat_history = "\n".join(result)
+            chat_history_str = "\n".join(result)
 
-            return chat_history
+            return chat_history_str, msgs
 
     @staticmethod
     def get_current_chat_name():

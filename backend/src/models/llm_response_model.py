@@ -3,14 +3,14 @@ from typing import List
 
 
 @dataclass
-class SuggestedResponse:
+class ReplyListItem:
     style: str
     text: str
 
 
 @dataclass
-class ReplyResponse:
-    reply_list: List[SuggestedResponse]
+class ReplyLlmResponse:
+    reply_list: List[ReplyListItem]
 
     @classmethod
     def from_dict(cls, data: dict) -> "LLMResponse":
@@ -32,7 +32,7 @@ class ReplyResponse:
             }
             response = LLMResponse.from_dict(data)
         """
-        responses = [SuggestedResponse(**resp) for resp in data["reply_list"]]
+        responses = [ReplyListItem(**resp) for resp in data["reply_list"]]
         return cls(reply_list=responses)
 
 

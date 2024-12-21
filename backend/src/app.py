@@ -49,7 +49,7 @@ app = Flask(__name__)
 CORS(app)  # 启用CORS支持，允许跨域请求
 
 # 启动定时器
-timer.start()
+# timer.start()
 
 # 注册路由（添加 /api 前缀）
 app.register_blueprint(llm_bp, url_prefix="/api/llm")
