@@ -47,6 +47,7 @@ class WeixinUtils:
 
         Returns:
             str: 格式化后的聊天记录
+            list:所有的聊天记录
         """
         with com_initializer():
             wx = WeChatSingleton.get_instance()
@@ -75,9 +76,9 @@ class WeixinUtils:
                     result.append(f"【recall】{msg.content}")
 
             # Join all messages with newlines
-            chat_history = "\n".join(result)
+            chat_history_str = "\n".join(result)
 
-            return chat_history
+            return chat_history_str, msgs
 
     @staticmethod
     def get_current_chat_name():
@@ -93,6 +94,27 @@ class WeixinUtils:
 
     @staticmethod
     def send_msg(msg: str):
+        """
+        从 wxauto 中发送消息到当前聊天窗口
+
+        Args:
+            msg (str): 要发送的消息
+        """
         with com_initializer():
             wx = WeChatSingleton.get_instance()
             wx.SendMsg(msg)
+
+    @staticmethod
+    def get_all_new_message(max_round=10):
+        """
+        从 wxauto 中获取所有新消息
+
+        Args:
+            max_round (int): 最大获取次数  * 这里是为了避免某几个窗口一直有新消息，导致无法停止
+
+        Returns:    
+            list: 所有新消息的列表
+        """
+        with com_initializer():
+            wx = WeChatSingleton.get_instance()
+            return wx.GetAllNewMessage(max_round)

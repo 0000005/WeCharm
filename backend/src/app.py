@@ -11,6 +11,7 @@ from routers.setting_router import bp as setting_bp
 from routers.friend_router import bp as friend_bp
 from routers.weixin_router import bp as weixin_bp
 from routers.static_router import bp as static_bp
+from timer.scheduler import timer
 
 # 设置标准输出编码为utf-8
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
@@ -46,6 +47,9 @@ logger = logging.getLogger("wecharm")
 
 app = Flask(__name__)
 CORS(app)  # 启用CORS支持，允许跨域请求
+
+# 启动定时器
+# timer.start()
 
 # 注册路由（添加 /api 前缀）
 app.register_blueprint(llm_bp, url_prefix="/api/llm")

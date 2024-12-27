@@ -15,9 +15,9 @@ const closeWindow = () => {
     <div class="main-container">
       <TabMenu />
     </div>
-    <div class="copyright">
+    <!-- <div class="copyright">
       <span> 本软件开源免费，欢迎 <a href="https://github.com/" target="_blank">Star</a></span>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -42,7 +42,6 @@ const closeWindow = () => {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
-  margin-bottom: 60px;
 }
 
 .copyright {

@@ -1,6 +1,6 @@
 from langchain_openai import ChatOpenAI
 from config.prompts import get_prompt
-from models.llm_response_model import ReplyResponse, IntentResponse
+from models.llm_response_model import ReplyLlmResponse, IntentResponse
 from models.friend_model import Friend
 from models.setting_model import Settings
 from utils.time_utils import get_current_time
@@ -128,7 +128,7 @@ class LLMUtils:
         chat_history: str,
         friend: Friend,
         settings: Settings,
-    ) -> ReplyResponse:
+    ) -> ReplyLlmResponse:
         """
         Get LLM response using the specified prompt type in JSON mode.
 
@@ -168,4 +168,4 @@ class LLMUtils:
         llm = LLMUtils._create_llm_instance(settings)
         response = llm.invoke(messages)
 
-        return ReplyResponse.from_dict(json.loads(response.content))
+        return ReplyLlmResponse.from_dict(json.loads(response.content))
